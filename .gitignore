@@ -1,0 +1,22 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Node / Web
+node_modules/
+dist/
+build/
+.env
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

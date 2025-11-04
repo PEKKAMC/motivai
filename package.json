@@ -1,0 +1,11 @@
+{
+  "name": "motivai",
+  "version": "1.0.0",
+  "description": "Motivation + AI Coach",
+  "main": "index.html",
+  "scripts": {
+    "start": "echo \"Open index.html in your browser\""
+  },
+  "author": "MOTIVAI Team",
+  "license": "MIT"
+}

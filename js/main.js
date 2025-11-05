@@ -3,9 +3,20 @@ const goalSetting = document.getElementById('goal-setting');
 const chatInterface = document.getElementById('chat-interface');
 const selectedCategoryTitle = document.getElementById('selected-category-title');
 const suggestedGoalsContainer = document.getElementById('suggested-goals');
+const premiumBanner = document.getElementById('premium-banner');
 
 let currentCategory = 0;
 let currentCategoryName = "";
+
+// Return to home
+function returnToHome() {
+    goalSetting.classList.add('hidden');
+    chatInterface.classList.add('hidden');
+
+    categorySelection.classList.remove('hidden');
+
+    premiumBanner.classList.remove('hidden');
+}
 
 // Sample goals for demonstration
 const goalData = {
@@ -44,13 +55,18 @@ function selectCategory(categoryId, categoryName) {
     // Transition to Goal Setting Screen
     categorySelection.classList.add('hidden');
     goalSetting.classList.remove('hidden');
+
+    // Hide Premium Banner
+    premiumBanner.classList.add('hidden');
 }
 
 function startChat() {
     // This function simulates starting the actual chat interface
     goalSetting.classList.add('hidden');
     chatInterface.classList.remove('hidden');
-    chatInterface.style.height = 'calc(100vh - 8rem)'; // Adjust height for mobile view
+
+    // Hide Premium Banner
+    premiumBanner.classList.add('hidden');
 }
 
 // Initialize the view state

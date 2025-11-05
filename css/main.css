@@ -3,6 +3,7 @@ body {
     font-family: 'Inter', sans-serif;
     background-color: #f0f4f8; /* Nền nhẹ nhàng */
 }
+
 .app-container {
     max-width: 420px;
     margin: 0 auto;
@@ -12,6 +13,7 @@ body {
     display: flex;
     flex-direction: column;
 }
+
 .category-card {
     transition: all 0.3s ease;
     cursor: pointer;
@@ -21,10 +23,12 @@ body {
     justify-content: space-between;
     align-items: flex-start;
 }
+
 .category-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
+
 /* Custom Icon Styles (using inline SVG for mobile) */
 .icon-circle {
     width: 40px;

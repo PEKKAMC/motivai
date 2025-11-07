@@ -141,3 +141,11 @@ def plan():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=PORT, debug=False)
+from ai_core import motivate_user
+
+@app.post("/api/motivate")
+def motivate():
+    data = request.get_json()
+    message = data.get("message", "")
+    reply = motivate_user(message)
+    return jsonify({"response": reply})

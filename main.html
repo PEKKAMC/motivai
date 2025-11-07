@@ -98,7 +98,7 @@
                 <textarea id="custom-goal" rows="2" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 shadow-sm" placeholder="Ví dụ: Tớ muốn học cách nói 'Không' một cách lịch sự."></textarea>
             </div>
 
-            <button onclick="startChat()" class="w-full py-3 px-4 bg-indigo-500 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg transition duration-150">
+            <button onclick="showChatInterface()" class="w-full py-3 px-4 bg-indigo-500 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg transition duration-150">
                 Bắt Đầu Đồng Hành Cùng MOTIVAI
             </button>
         </section>
@@ -111,29 +111,12 @@
                     Quay lại Trang chủ
                 </button>
             </div>
-            <div class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 rounded-lg">
-                <div class="flex justify-start">
-                    <div class="bg-indigo-100 text-indigo-800 p-4 rounded-3xl rounded-bl-none max-w-xs shadow-sm">
-                        <p class="font-medium">Chào bạn! Tớ là MOTIVAI. Vấn đề mà bạn đang muốn giải quyết là gì? Tớ ở đây để lắng nghe và đồng hành cùng bạn.</p>
-                        <p class="text-xs mt-2 text-indigo-600">MOTIVAI - Tone: Vui vẻ, Cởi mở</p>
-                    </div>
-                </div>
-                <div class="flex justify-end">
-                    <div class="bg-blue-500 text-white p-4 rounded-3xl rounded-br-none max-w-xs shadow-md">
-                        <p>Mình muốn uống đủ 4 cốc nước hằng ngày.</p>
-                    </div>
-                </div>
-                <div class="flex justify-start">
-                    <div class="bg-indigo-100 text-indigo-800 p-4 rounded-3xl rounded-bl-none max-w-xs shadow-sm">
-                        <p class="font-medium">Tuyệt vời! Một mục tiêu rất tốt cho sức khỏe. Chúng ta sẽ cùng nhau chinh phục nó nhé! Bạn muốn đặt lịch cụ thể như thế nào (ví dụ: 8h, 12h, 15h, 20h) để tớ nhắc nhở bạn?</p>
-                    </div>
-                </div>
-            </div>
+            <div class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 rounded-lg"></div>
 
             <div class="p-3 border-t border-gray-200">
                 <div class="flex items-center space-x-2">
-                    <input type="text" class="flex-1 p-3 border border-gray-300 rounded-full focus:ring-indigo-500 focus:border-indigo-500" placeholder="Nhập tin nhắn...">
-                    <button class="p-3 bg-indigo-500 rounded-full text-white hover:bg-indigo-700 transition">
+                    <input type="text" id="chat-input" class="flex-1 p-3 border border-gray-300 rounded-full focus:ring-indigo-500 focus:border-indigo-500" placeholder="Nhập tin nhắn...">
+                    <button id="send-button" class="p-3 bg-indigo-500 rounded-full text-white hover:bg-indigo-700 transition">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                     </button>
                 </div>

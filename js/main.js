@@ -22,7 +22,7 @@ const BACKEND_URL = "http://localhost:8000";
 // --- State ---
 let currentCategoryId = 0;
 let currentCategoryName = "";
-let currentCategoryKey = ""; // The key sent to the backend (e.g., 'habit')
+let currentCategoryKey = "";
 
 // --- Utility Functions ---
 

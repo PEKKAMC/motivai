@@ -12,13 +12,12 @@ const customGoalTextarea = document.getElementById('custom-goal');
 // --- Configuration ---
 // Map ID to the string key expected by Flask (habit, study, emotion)
 const CATEGORY_MAP = {
-    1: 'habit',   // Cai Nghiện Vật Lý (treat as 'habit' for tiny steps)
-    2: 'habit',   // Xây Dựng Thói Quen
-    3: 'emotion', // Thay đổi Tâm Trí/Hành vi (closest to 'emotion' or 'study')
-    4: 'emotion'  // Hỗ trợ Tinh thần Khẩn cấp
-    // Note: The backend uses 'habit', 'study', 'emotion'. We'll use 'habit' and 'emotion' here.
+    1: 'habit',
+    2: 'habit',
+    3: 'emotion',
+    4: 'emotion'
 };
-const BACKEND_URL = "http://localhost:8000"; // 🛑 CHANGE THIS if your backend is on a different host/port!
+const BACKEND_URL = "http://localhost:8000";
 
 // --- State ---
 let currentCategoryId = 0;
@@ -83,15 +82,15 @@ async function sendMessage(userMessage) {
     chatInput.value = ''; // Clear input field
 
     try {
-        const response = await fetch(`${BACKEND_URL}/api/chat`, { // ✅ FIX 1: Corrected URL path
-            method: 'POST', // ✅ FIX 2: Corrected HTTP Method
+        const response = await fetch(`${BACKEND_URL}/api/chat`, {
+            method: 'POST',
             headers: {
-                'Content-Type': 'application/json' // ✅ FIX 3: Required Header
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 message: userMessage,
                 // Use the string key expected by the backend
-                category: currentCategoryKey // ✅ FIX 4: Send the correct category key
+                category: currentCategoryKey
             })
         });
 
@@ -210,5 +209,5 @@ window.onload = () => {
     // Make functions globally accessible (since they are referenced in HTML onclick)
     window.returnToHome = returnToHome;
     window.selectCategory = selectCategory;
-    window.showChatInterface = showChatInterface; // Renamed from startChat
+    window.showChatInterface = showChatInterface;
 }

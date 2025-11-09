@@ -138,7 +138,7 @@ def plan():
         ]
         fb_rems = [{"time": t, "message": "Đến giờ MOTIVAI nhắc mục tiêu nhé!"} for t in (norm or ["08:00","20:00"])]
         return jsonify(ok=True, plan={"steps": fb_steps, "reminders": fb_rems, "tone": "friendly"}, model=MODEL, fallback=True), 200
-
+from ai_core import motivate_user
 @app.post("/api/motivate")
 def motivate():
     data = request.get_json()
@@ -148,5 +148,5 @@ def motivate():
     
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=PORT, debug=False)
-from ai_core import motivate_user
+
 

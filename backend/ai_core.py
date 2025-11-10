@@ -1,151 +1,128 @@
-import os, re, json
+import os
+import re
+from typing import Optional
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
 
-try:
-    from openai import OpenAI
-except Exception:
-    OpenAI = None  # cho phép chạy chế độ STUB khi chưa cài openai
+# Gemini
+import google.generativeai as genai
 
-load_dotenv()
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "").strip()
-MODEL = os.getenv("MODEL", "gpt-4o-mini")
-PORT = int(os.getenv("PORT", "8000"))
+# ---------- Config & bootstrap ----------
+load_dotenv()  # đọc .env nếu có
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
+MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-1.5-pro")
 
 app = Flask(__name__)
-# Cho phép gọi từ các origin phổ biến khi dev (serve bằng Live Server/localhost)
-CORS(app, resources={r"/api/*": {"origins": [
-    "http://localhost:5500", "http://127.0.0.1:5500",
-    "http://localhost:3000", "http://127.0.0.1:3000",
-    "http://localhost:5173", "http://127.0.0.1:5173"
-]}})
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-@app.after_request
-def secure_headers(resp):
-    resp.headers["X-Content-Type-Options"] = "nosniff"
-    resp.headers["X-Frame-Options"] = "DENY"
-    resp.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-    return resp
+# Block một số nội dung nguy cơ cao (bạn có thể mở rộng)
+BLOCKLIST = re.compile(
+    r"(suicide|tự\s*sát|ma\s*túy|phishing|carding|hack\s*\*?ai)",
+    re.IGNORECASE,
+)
 
+# Nếu có API key thì khởi tạo model
+MODEL = None
+if GEMINI_API_KEY:
+    genai.configure(api_key=GEMINI_API_KEY)
+    MODEL = genai.GenerativeModel(
+        MODEL_NAME,
+        generation_config={
+            "temperature": 0.8,
+            "top_p": 0.95,
+            "top_k": 40,
+            "max_output_tokens": 512,
+        },
+        safety_settings=None,  # dùng mặc định của Google; có thể tuỳ chỉnh theo chính sách
+    )
+
+
+# ---------- Helpers ----------
+def stub_reply(msg: str) -> str:
+    """Trả lời tạm khi chưa có API key (để dev/test nhanh)."""
+    trimmed = (msg or "").strip()
+    if len(trimmed) > 100:
+        trimmed = trimmed[:100] + "…"
+    return (
+        f"(MOTIVAI–stub) Mình đã nhận mục tiêu của bạn: “{trimmed}”. "
+        "Bắt đầu bằng 1 bước nhỏ ngay hôm nay nhé! 💪"
+    )
+
+
+def build_system_prompt(category: Optional[str]) -> str:
+    """
+    Prompt hệ thống nhẹ, điều chỉnh giọng điệu theo nhóm.
+    category ∈ {'habit','study','emotion'} nếu frontend gửi.
+    """
+    base = (
+        "You are MOTIVAI, a concise, upbeat motivation coach. "
+        "Always be practical, non-judgmental, and action-oriented. "
+        "Write 2–5 short bullet points max, Vietnamese, with 1 emoji at the end.\n"
+    )
+    if category == "habit":
+        base += "Focus on tiny habits, triggers, and 1 next action in under 30 seconds.\n"
+    elif category == "study":
+        base += "Focus on time-blocks, distraction control, and a 25–50 minute plan.\n"
+    elif category == "emotion":
+        base += "Acknowledge feelings, suggest one grounding technique, and a small step.\n"
+    return base
+
+
+def call_gemini(user_message: str, category: Optional[str]) -> str:
+    """Gọi Gemini và trả về text đã làm sạch."""
+    system_prompt = build_system_prompt(category)
+    # Với Gemini, ta truyền mảng content: [system, user]
+    resp = MODEL.generate_content(
+        [
+            {"role": "user", "parts": system_prompt + "\n\nNgười dùng: " + user_message}
+        ]
+    )
+    # Gemini có thể trả nhiều candidates; lấy text chính
+    text = getattr(resp, "text", "") or ""
+    return text.strip() or "Mình đang gặp chút sự cố, thử lại giúp mình nhé!"
+
+
+# ---------- Routes ----------
 @app.get("/health")
 def health():
-    return {"ok": True, "service": "motivai-backend", "model": MODEL}
+    return jsonify(
+        {
+            "ok": True,
+            "service": "motivai-backend",
+            "model": MODEL_NAME,
+            "gemini_configured": bool(MODEL),
+        }
+    )
 
-# ---- STUB mode (chạy được ngay cả khi chưa có API key) ----
-def stub_reply(msg: str) -> str:
-    return f"(MOTIVAI-stub) Mình đã nhận mục tiêu của bạn: “{msg[:100]}”. Bắt đầu bằng 1 bước nhỏ ngay hôm nay nhé! 💪"
-
-BLOCKLIST = re.compile(r"(suicide|tự\s*sát|ma túy|phishing|carding|hack\s*ai)", re.IGNORECASE)
 
 @app.post("/api/chat")
 def chat():
     data = request.get_json(silent=True) or {}
     message = (data.get("message") or "").strip()
+    category = (data.get("category") or "").strip().lower() or None  # habit/study/emotion
+
+    # Validate
     if not message or len(message) > 2000:
         return jsonify(error="message invalid or too long"), 400
     if BLOCKLIST.search(message):
         return jsonify(error="topic not supported"), 400
 
-    # Nếu chưa có key → trả lời STUB (để bạn test ngay)
-    if not OPENAI_API_KEY or OpenAI is None:
-        return jsonify(ok=True, reply=stub_reply(message), model="stub")
+    # Nếu chưa cấu hình API key -> stub
+    if MODEL is None:
+        return jsonify(reply=stub_reply(message), mode="stub"), 200
 
     try:
-        client = OpenAI(api_key=OPENAI_API_KEY)
-        r = client.chat.completions.create(
-            model=MODEL,
-            messages=[
-                {"role": "system", "content":
-                 "You are MOTIVAI, a concise, practical, optimistic motivation coach. "
-                 "Give 1–3 concrete next steps. Avoid medical/legal advice."},
-                {"role": "user", "content": message}
-            ],
-            temperature=0.7,
-            max_tokens=350
-        )
-        reply = (r.choices[0].message.content or "").strip()
-        return jsonify(ok=True, reply=reply, model=MODEL)
-    except Exception:
-        # Giữ lỗi kín với client
-        return jsonify(error="AI service temporarily unavailable"), 503
-
-@app.post("/api/plan")
-def plan():
-    """Trả về JSON kế hoạch 7 ngày: steps[], reminders[{time,message}], tone."""
-    data = request.get_json(silent=True) or {}
-    goal = (data.get("goal") or "").strip()
-    times = data.get("times") or []
-    if not goal or len(goal) > 300: return jsonify(error="goal invalid"), 400
-    if BLOCKLIST.search(goal): return jsonify(error="topic not supported"), 400
-    norm = [t for t in times[:8] if re.match(r"^\d{2}:\d{2}$", str(t))]
-
-    # STUB plan để dùng ngay nếu chưa có key
-    if not OPENAI_API_KEY or OpenAI is None:
-        steps = [
-            "Viết 1 câu cam kết cá nhân cho mục tiêu.",
-            "Chuẩn bị dụng cụ/ứng dụng theo dõi.",
-            "Chia mục tiêu thành việc nhỏ mỗi ngày.",
-            "Đặt 2–4 khung giờ cố định.",
-            "Mỗi tối tự đánh giá 1 câu ngắn.",
-            "Khen thưởng nhỏ khi hoàn thành.",
-            "Chia sẻ tiến độ với 1 người bạn."
-        ]
-        reminders = [{"time": t, "message": "MOTIVAI nhắc nhẹ: tới giờ mục tiêu! ✨"} for t in (norm or ["08:00","20:00"])]
-        return jsonify(ok=True, plan={"steps": steps, "reminders": reminders, "tone": "friendly"}, model="stub")
-
-    try:
-        client = OpenAI(api_key=OPENAI_API_KEY)
-        prompt = (
-            "Return STRICT JSON only with keys: steps (5-8 items, strings), "
-            "reminders (objects {time:'HH:MM', message}), tone ('friendly'|'neutral'|'energetic'). "
-            f"Goal: {goal}. Preferred times: {', '.join(norm) if norm else 'none'}"
-        )
-        r = client.chat.completions.create(
-            model=MODEL,
-            messages=[{"role": "system", "content": prompt}],
-            temperature=0.6,
-            max_tokens=600
-        )
-        raw = (r.choices[0].message.content or "").strip()
-        if raw.startswith("```"):
-            raw = raw.strip("`")
-            raw = re.sub(r"^json", "", raw, flags=re.IGNORECASE).strip()
-        obj = json.loads(raw)
-        # validate tối thiểu
-        steps = [s for s in obj.get("steps", []) if isinstance(s, str)][:8]
-        rems = []
-        for rm in obj.get("reminders", [])[:12]:
-            t = (rm.get("time") or "").strip()
-            m = (rm.get("message") or "").strip()
-            if re.match(r"^\d{2}:\d{2}$", t) and 1 <= len(m) <= 120:
-                rems.append({"time": t, "message": m})
-        tone = obj.get("tone") if obj.get("tone") in ["friendly","neutral","energetic"] else "friendly"
-        if len(steps) < 5:
-            steps += ["Hoàn thiện mục tiêu bằng các bước nhỏ.", "Ghi nhận tiến bộ mỗi ngày."]
-        if norm and rems:
-            for i in range(min(len(norm), len(rems))):
-                rems[i]["time"] = norm[i]
-        return jsonify(ok=True, plan={"steps": steps, "reminders": rems, "tone": tone}, model=MODEL)
-    except Exception:
+        reply = call_gemini(message, category)
+        return jsonify(reply=reply, mode="gemini"), 200
+    except Exception as e:
         # fallback an toàn
-        fb_steps = [
-            "Xác định lý do và lợi ích cốt lõi.",
-            "Chuẩn bị môi trường hỗ trợ.",
-            "Đặt thời lượng/khung giờ cố định.",
-            "Theo dõi bằng checklist 7 ngày.",
-            "Tổng kết ngắn vào buổi tối."
-        ]
-        fb_rems = [{"time": t, "message": "Đến giờ MOTIVAI nhắc mục tiêu nhé!"} for t in (norm or ["08:00","20:00"])]
-        return jsonify(ok=True, plan={"steps": fb_steps, "reminders": fb_rems, "tone": "friendly"}, model=MODEL, fallback=True), 200
+        return jsonify(reply=stub_reply(message), mode="fallback", detail=str(e)), 200
 
+
+# ---------- Entrypoint ----------
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=PORT, debug=False)
-from ai_core import motivate_user
-
-@app.post("/api/motivate")
-def motivate():
-    data = request.get_json()
-    message = data.get("message", "")
-    reply = motivate_user(message)
-    return jsonify({"response": reply})
+    # Chạy local: python backend/app.py
+    port = int(os.getenv("PORT", "8000"))
+    app.run(host="0.0.0.0", port=port, debug=os.getenv("DEBUG", "false") == "true")

@@ -185,9 +185,6 @@ window.onload = () => {
     goalSetting.classList.add('hidden');
     chatInterface.classList.add('hidden');
 
-    // Attach listener to the main "Start Chat" button on the Goal Setting screen
-    document.querySelector('#goal-setting button').onclick = showChatInterface;
-
     // Attach listener to the send button inside the chat interface
     sendButton.addEventListener('click', () => {
         const message = chatInput.value;

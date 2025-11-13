@@ -12,11 +12,10 @@ import google.generativeai as genai
 # ---------- Config & bootstrap ----------
 load_dotenv()  # đọc .env nếu có
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
-MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-1.5-pro")
+MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-flash-latest")
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
-
 # Block một số nội dung nguy cơ cao (bạn có thể mở rộng)
 BLOCKLIST = re.compile(
     r"(suicide|tự\s*sát|ma\s*túy|phishing|carding|hack\s*\*?ai)",
@@ -33,7 +32,7 @@ if GEMINI_API_KEY:
             "temperature": 0.8,
             "top_p": 0.95,
             "top_k": 40,
-            "max_output_tokens": 512,
+            "max_output_tokens": 8192,
         },
         safety_settings=None,  # dùng mặc định của Google; có thể tuỳ chỉnh theo chính sách
     )
@@ -59,7 +58,9 @@ def build_system_prompt(category: Optional[str]) -> str:
     base = (
         "You are MOTIVAI, a concise, upbeat motivation coach. "
         "Always be practical, non-judgmental, and action-oriented. "
+        "Give a solution, a roadmap to help with the problem"
         "Write 2–5 short bullet points max, Vietnamese, with 1 emoji at the end.\n"
+        "Reponse in relation with the question"
     )
     if category == "habit":
         base += "Focus on tiny habits, triggers, and 1 next action in under 30 seconds.\n"
@@ -74,13 +75,17 @@ def call_gemini(user_message: str, category: Optional[str]) -> str:
     """Gọi Gemini và trả về text đã làm sạch."""
     system_prompt = build_system_prompt(category)
     # Với Gemini, ta truyền mảng content: [system, user]
-    resp = MODEL.generate_content(
-        [
-            {"role": "user", "parts": system_prompt + "\n\nNgười dùng: " + user_message}
-        ]
-    )
-    # Gemini có thể trả nhiều candidates; lấy text chính
-    text = getattr(resp, "text", "") or ""
+    try:
+        resp = MODEL.generate_content(
+            [
+                {"role": "user", "parts": system_prompt + "\n\nNgười dùng: " + user_message}
+            ]
+        )
+        # Gemini có thể trả nhiều candidates; lấy text chính
+        text = getattr(resp, "text", "") or ""
+    except Exception as e:
+        print("Error Message:", e)
+        text = ""
     return text.strip() or "Mình đang gặp chút sự cố, thử lại giúp mình nhé!"
 
 
@@ -117,6 +122,7 @@ def chat():
         reply = call_gemini(message, category)
         return jsonify(reply=reply, mode="gemini"), 200
     except Exception as e:
+        print("Error Message:", e)
         # fallback an toàn
         return jsonify(reply=stub_reply(message), mode="fallback", detail=str(e)), 200
 

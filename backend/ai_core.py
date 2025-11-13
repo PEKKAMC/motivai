@@ -12,7 +12,7 @@ import google.generativeai as genai
 # ---------- Config & bootstrap ----------
 load_dotenv()  # đọc .env nếu có
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
-MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-1.5-pro")
+MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-flash-lastest")
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
@@ -33,7 +33,7 @@ if GEMINI_API_KEY:
             "temperature": 0.8,
             "top_p": 0.95,
             "top_k": 40,
-            "max_output_tokens": 512,
+            "max_output_tokens": 8192,
         },
         safety_settings=None,  # dùng mặc định của Google; có thể tuỳ chỉnh theo chính sách
     )
@@ -118,11 +118,24 @@ def chat():
         return jsonify(reply=reply, mode="gemini"), 200
     except Exception as e:
         # fallback an toàn
-        return jsonify(reply=stub_reply(message), mode="fallback", detail=str(e)), 200
-
-
-# ---------- Entrypoint ----------
+        fb_steps = [
+            "Xác định lý do và lợi ích cốt lõi.",
+            "Chuẩn bị môi trường hỗ trợ.",
+            "Đặt thời lượng/khung giờ cố định.",
+            "Theo dõi bằng checklist 7 ngày.",
+            "Tổng kết ngắn vào buổi tối."
+        ]
+        fb_rems = [{"time": t, "message": "Đến giờ MOTIVAI nhắc mục tiêu nhé!"} for t in (norm or ["08:00","20:00"])]
+        return jsonify(ok=True, plan={"steps": fb_steps, "reminders": fb_rems, "tone": "friendly"}, model=MODEL, fallback=True), 200
+from ai_core import motivate_user
+@app.post("/api/motivate")
+def motivate():
+    data = request.get_json()
+    message = data.get("message", "")
+    reply = motivate_user(message)
+    return jsonify({"response": reply})
+    
 if __name__ == "__main__":
-    # Chạy local: python backend/app.py
-    port = int(os.getenv("PORT", "8000"))
-    app.run(host="0.0.0.0", port=port, debug=os.getenv("DEBUG", "false") == "true")
+    app.run(host="0.0.0.0", port=PORT, debug=False)
+
+

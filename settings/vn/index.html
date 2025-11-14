@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOTIVAI - Đồng Hành Cùng Bạn</title>
+    <link rel="stylesheet" href="../../css/settings.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+<div id="menu-overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 ease-in-out"></div>
+
+<div class="app-container relative">
+
+    <div id="slide-menu" class="hidden absolute top-0 left-0 h-full w-64 bg-white shadow-lg z-50 transform -translate-x-full transition-transform duration-300 ease-in-out">
+        <div class="p-4">
+            <button id="menu-close-button" class="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100">
+                <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <h2 class="text-xl font-bold text-blue-600 mt-2 mb-6">Menu</h2>
+
+            <a href="../../main/vn" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+                <svg class="w-5 h-5 mr-3 -scale-x-100" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                AI
+            </a>
+            <a href="../../settings/vn" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+                <svg class="w-5 h-5 mr-3 -scale-x-100" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                Cài đặt
+            </a>
+            <a href="../../premium/vn" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+                <svg class="w-5 h-5 mr-3 -scale-x-100" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                Premium
+            </a>
+            <a href="../vn" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+                <svg class="w-5 h-5 mr-3 -scale-x-100" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                Đăng xuất
+            </a>
+            </div>
+    </div>
+    <header class="p-6 bg-blue-600 text-white rounded-b-xl shadow-lg flex justify-between items-center">
+
+        <button id="menu-toggle-button" title="Menu" class="p-2 rounded-full hover:bg-blue-700 transition duration-150">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+
+        <div class="text-right"> <h1 class="text-3xl font-extrabold tracking-tight">MOTIVAI</h1>
+            <p class="text-sm opacity-90 mt-1">Cài đặt.</p>
+        </div>
+    </header>
+</div>
+<script src="../../js/settings.js"></script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f0f4f8;
+}
+
+.app-container {
+    max-width: 420px;
+    margin: 0 auto;
+    min-height: 100vh;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Style cho icon check */
+.check-icon {
+    color: #16a34a; /* green-600 */
+
+}
+.cross-icon {
+    color: #d1d5db; /* gray-400 */
+}

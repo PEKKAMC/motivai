@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MOTIVAI - Đồng Hành Cùng Bạn</title>
-    <link rel="stylesheet" href="../../css/settings.css">
+    <title>Cài đặt - MOTIVAI</title>
+    <link rel="stylesheet" href="../../css/main.css">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
@@ -19,19 +19,19 @@
             </button>
             <h2 class="text-xl font-bold text-blue-600 mt-2 mb-6">Menu</h2>
 
-            <a href="../../main/vn" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+            <a href="../main" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
                 <svg class="w-5 h-5 mr-3 -scale-x-100" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                 AI
             </a>
-            <a href="../../settings/vn" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+            <a href="../settings" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
                 <svg class="w-5 h-5 mr-3 -scale-x-100" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                 Cài đặt
             </a>
-            <a href="../../premium/vn" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+            <a href="../premium" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
                 <svg class="w-5 h-5 mr-3 -scale-x-100" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                 Premium
             </a>
-            <a href="../vn" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+            <a href=".." class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
                 <svg class="w-5 h-5 mr-3 -scale-x-100" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                 Đăng xuất
             </a>
@@ -44,10 +44,44 @@
         </button>
 
         <div class="text-right"> <h1 class="text-3xl font-extrabold tracking-tight">MOTIVAI</h1>
-            <p class="text-sm opacity-90 mt-1">Cài đặt.</p>
+            <p class="text-sm opacity-90 mt-1">Đồng hành cùng bạn, từng bước một.</p>
         </div>
     </header>
-</div>
+
+    <main class="flex-1 p-5 overflow-y-auto">
+        <a href="../main" class="flex items-center text-sm text-gray-500 hover:text-indigo-600 transition duration-150 font-medium mb-4">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            Quay lại Trang chủ
+        </a>
+
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Cài đặt</h2>
+
+        <div class="bg-white p-6 rounded-xl shadow-md space-y-6">
+
+            <div>
+                <label for="language-select" class="block text-lg font-semibold text-gray-700">Ngôn ngữ</label>
+                <p class="text-sm text-gray-500 mb-2">Chọn ngôn ngữ hiển thị cho ứng dụng.</p>
+                <select id="language-select" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 bg-white shadow-sm">
+                    <option value="vi" selected>Tiếng Việt</option>
+                    <option value="en">English</option>
+                    </select>
+            </div>
+
+            <div class="pt-4 border-t border-gray-100">
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">Tài khoản</h3>
+                <a href="#" class="text-indigo-600 hover:underline text-sm font-medium">Quản lý thông tin cá nhân</a><br>
+                <a href="#" class="text-indigo-600 hover:underline text-sm font-medium">Đổi mật khẩu</a>
+            </div>
+
+            <div class="pt-6">
+                 <button class="w-full py-3 px-4 bg-indigo-500 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg transition duration-150">
+                    Lưu thay đổi
+                </button>
+            </div>
+        </div>
+    </main>
+    </div>
+
 <script src="../../js/settings.js"></script>
 </body>
 </html>

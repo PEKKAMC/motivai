@@ -13,7 +13,7 @@ import google.generativeai as genai
 load_dotenv()  # đọc .env nếu có
 
 
-GEMINI_API_KEY = os.getenv(key, "").strip()
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-flash-latest")
 
 app = Flask(__name__)

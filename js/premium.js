@@ -1,34 +1,42 @@
+const user = localStorage.getItem("loggedInUser");
+
+if (!user) {
+    // User is NOT logged in. Redirect to login page.
+    window.location.href = "../login";
+}
+
 const menuToggleButton = document.getElementById('menu-toggle-button');
 const menuOverlay = document.getElementById('menu-overlay');
 const slideMenu = document.getElementById('slide-menu');
 const menuCloseButton = document.getElementById('menu-close-button');
 
-// Attach event listeners after the DOM is loaded
+function openMenu() {
+    if (menuOverlay) menuOverlay.classList.remove('hidden');
+    if (slideMenu) {
+        slideMenu.classList.remove('hidden');
+        requestAnimationFrame(() => {
+            slideMenu.classList.remove('-translate-x-full');
+            slideMenu.classList.add('translate-x-0');
+        });
+    }
+}
+
+function closeMenu() {
+    if (menuOverlay) menuOverlay.classList.add('hidden');
+    if (slideMenu) {
+        slideMenu.classList.add('-translate-x-full');
+        slideMenu.classList.remove('translate-x-0');
+        setTimeout(() => {
+            slideMenu.classList.add('hidden');
+        }, 300);
+    }
+}
+
+function logout() {
+    localStorage.removeItem("loggedInUser");
+}
+
 window.onload = () => {
-    // Open Menu
-    function openMenu() {
-        if (menuOverlay) menuOverlay.classList.remove('hidden');
-        if (slideMenu) {
-            slideMenu.classList.remove('hidden');
-            requestAnimationFrame(() => {
-                slideMenu.classList.remove('-translate-x-full');
-                slideMenu.classList.add('translate-x-0');
-            });
-        }
-    }
-
-    // Close Menu
-    function closeMenu() {
-        if (menuOverlay) menuOverlay.classList.add('hidden');
-        if (slideMenu) {
-            slideMenu.classList.add('-translate-x-full');
-            slideMenu.classList.remove('translate-x-0');
-            setTimeout(() => {
-                slideMenu.classList.add('hidden');
-            }, 300);
-        }
-    }
-
     if (menuToggleButton) {
         menuToggleButton.addEventListener('click', openMenu);
     }
@@ -39,7 +47,6 @@ window.onload = () => {
         menuOverlay.addEventListener('click', closeMenu);
     }
 
-    // Make functions globally accessible (since they are referenced in HTML onclick)
     window.returnToHome = returnToHome;
     window.selectCategory = selectCategory;
     window.showChatInterface = showChatInterface;

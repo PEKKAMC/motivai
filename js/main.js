@@ -1,3 +1,10 @@
+const user = localStorage.getItem("loggedInUser");
+
+if (!user) {
+    // User is NOT logged in. Redirect to login page.
+    window.location.href = "../login";
+}
+
 const categorySelection = document.getElementById('category-selection');
 const goalSetting = document.getElementById('goal-setting');
 const chatInterface = document.getElementById('chat-interface');
@@ -175,6 +182,32 @@ function showChatInterface() {
     premiumBanner.classList.add('hidden');
 }
 
+function openMenu() {
+    if (menuOverlay) menuOverlay.classList.remove('hidden');
+    if (slideMenu) {
+        slideMenu.classList.remove('hidden');
+        requestAnimationFrame(() => {
+            slideMenu.classList.remove('-translate-x-full');
+            slideMenu.classList.add('translate-x-0');
+        });
+    }
+}
+
+function closeMenu() {
+    if (menuOverlay) menuOverlay.classList.add('hidden');
+    if (slideMenu) {
+        slideMenu.classList.add('-translate-x-full');
+        slideMenu.classList.remove('translate-x-0');
+        setTimeout(() => {
+            slideMenu.classList.add('hidden');
+        }, 300);
+    }
+}
+
+function logout() {
+    localStorage.removeItem("loggedInUser");
+}
+
 window.onload = () => {
     categorySelection.classList.remove('hidden');
     goalSetting.classList.add('hidden');
@@ -195,28 +228,6 @@ window.onload = () => {
             }
         }
     });
-
-    function openMenu() {
-        if (menuOverlay) menuOverlay.classList.remove('hidden');
-        if (slideMenu) {
-            slideMenu.classList.remove('hidden');
-            requestAnimationFrame(() => {
-                slideMenu.classList.remove('-translate-x-full');
-                slideMenu.classList.add('translate-x-0');
-            });
-        }
-    }
-
-    function closeMenu() {
-        if (menuOverlay) menuOverlay.classList.add('hidden');
-        if (slideMenu) {
-            slideMenu.classList.add('-translate-x-full');
-            slideMenu.classList.remove('translate-x-0');
-            setTimeout(() => {
-                slideMenu.classList.add('hidden');
-            }, 300);
-        }
-    }
 
     if (menuToggleButton) {
         menuToggleButton.addEventListener('click', openMenu);

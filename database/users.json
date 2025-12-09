@@ -1,0 +1,16 @@
+[
+  {
+    "id": "u1",
+    "name": "admin",
+    "email": "",
+    "password": "admin",
+    "premium": true
+  },
+  {
+    "id": "u2",
+    "name": "PEKKAMC",
+    "email": "pekka@motivai.com",
+    "password": "Test123",
+    "premium": true
+  }
+]

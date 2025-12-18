@@ -9,6 +9,7 @@ const menuToggleButton = document.getElementById('menu-toggle-button');
 const menuOverlay = document.getElementById('menu-overlay');
 const slideMenu = document.getElementById('slide-menu');
 const menuCloseButton = document.getElementById('menu-close-button');
+const upgradeBtn = document.getElementById("upgrade-btn");
 
 function openMenu() {
     if (menuOverlay) menuOverlay.classList.remove('hidden');
@@ -50,4 +51,61 @@ window.onload = () => {
     window.returnToHome = returnToHome;
     window.selectCategory = selectCategory;
     window.showChatInterface = showChatInterface;
+
+    upgradeBtn.addEventListener("click", async () => { // THIS THING ISN'T WORKING
+        // Load messages from HTML
+        const msgLoginRequired = upgradeBtn.dataset.msgLoginRequired;
+        const msgSuccess = upgradeBtn.dataset.msgSuccess;
+        const msgNetworkError = upgradeBtn.dataset.msgNetworkError;
+        const msgErrorPrefix = upgradeBtn.dataset.msgErrorPrefix;
+        const processingText = upgradeBtn.dataset.processingText;
+        const originalText = upgradeBtn.dataset.originalText;
+
+        console.log("Button clicked") // IF IT WORKS, THIS MESSAGE MUST BE SENT IN THE LOG
+
+        // Check Login Status
+        const userJson = localStorage.getItem("loggedInUser");
+        if (!userJson) {
+            alert(msgLoginRequired);
+            window.location.href = "../login";
+            return;
+        }
+
+        const user = JSON.parse(userJson);
+
+        // UI Loading State
+        upgradeBtn.disabled = true;
+        upgradeBtn.textContent = processingText;
+
+        try {
+            // Send Request
+            const response = await fetch("/api/upgrade-premium", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: user.email })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                // Update Local Storage
+                user.premium = true;
+                localStorage.setItem("loggedInUser", JSON.stringify(user));
+
+                alert(msgSuccess);
+                window.location.reload();
+            } else {
+                // Server returned an error
+                alert(msgErrorPrefix + (result.message || "Unknown error"));
+                upgradeBtn.disabled = false;
+                upgradeBtn.textContent = originalText;
+            }
+
+        } catch (error) {
+            console.error("Fetch Error:", error);
+            alert(msgNetworkError);
+            upgradeBtn.disabled = false;
+            upgradeBtn.textContent = originalText;
+        }
+    });
 }

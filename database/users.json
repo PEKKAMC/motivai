@@ -12,5 +12,12 @@
     "email": "pekka@motivai.com",
     "password": "Test123",
     "premium": true
+  },
+  {
+    "id": "u3",
+    "name": "longchimcong",
+    "email": "longcong@gmail.com",
+    "password": "longcong",
+    "premium": false
   }
 ]

@@ -12,11 +12,6 @@ const passwordInput = document.getElementById("password");
 const confirmPasswordInput = document.getElementById("confirm-password");
 const errorMessage = document.getElementById("error-message");
 const errorText = document.getElementById("error-text");
-const loginForm = document.getElementById("login-form");
-const loginDetailsInput = document.getElementById("login-details");
-const passwordInput = document.getElementById("password");
-const errorMessage = document.getElementById("error-message");
-const errorText = document.getElementById("error-text");
 
 // Function to show an error message
 function showError(message) {
@@ -41,9 +36,14 @@ window.onload = () => {
         const password = passwordInput.value;
         const confirmPassword = confirmPasswordInput.value;
 
+        // Retrieve messages defined in HTML
+        const mismatchMsg = errorMessage.getAttribute("data-pass-mismatch");
+        const serverErrorDefault = errorMessage.getAttribute("data-server-error");
+        const networkErrorMsg = errorMessage.getAttribute("data-network-error");
+
         // 1. Check if passwords match
         if (password !== confirmPassword) {
-            showError("Confirmation password does not match. Please re-enter.");
+            showError(mismatchMsg);
             return; // Stop the function
         }
 
@@ -64,7 +64,7 @@ window.onload = () => {
             const result = await response.json(); // Server should respond with JSON
 
             if (!response.ok) {
-                showError(result.message || "Signup failed due to server error.");
+                showError(result.message || serverErrorDefault);
                 return;
             }
 
@@ -74,7 +74,7 @@ window.onload = () => {
 
         } catch (error) {
             console.error("Network or Fetch Error:", error);
-            showError("A network error occurred. Please try again.");
+            showError(networkErrorMsg);
         }
     });
 }

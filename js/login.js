@@ -32,6 +32,10 @@ window.onload = () => {
         const loginDetails = loginDetailsInput.value;
         const password = passwordInput.value;
 
+        // Retrieve messages defined in HTML
+        const invalidMsg = errorMessage.getAttribute("data-invalid-msg");
+        const serverMsg = errorMessage.getAttribute("data-server-msg");
+
         // --- User Authentication ---
         try {
             // Fetch the user data from the JSON file
@@ -55,12 +59,12 @@ window.onload = () => {
                 window.location.href = "../main";
             } else {
                 // No user found or password incorrect
-                showError("Incorrect Email or Username.");
+                showError(invalidMsg);
             }
 
         } catch (error) {
             console.error("Login Error:", error);
-            showError("Something went wrong, please try again.");
+            showError(serverMsg);
         }
     });
 }

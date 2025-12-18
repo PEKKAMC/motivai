@@ -20,7 +20,7 @@ const menuOverlay = document.getElementById('menu-overlay');
 const slideMenu = document.getElementById('slide-menu');
 const menuCloseButton = document.getElementById('menu-close-button');
 
-// --- Configuration ---
+// Configuration
 const CATEGORY_MAP = {
     1: 'habit',
     2: 'habit',
@@ -28,7 +28,7 @@ const CATEGORY_MAP = {
 };
 const BACKEND_URL = "http://localhost:8000";
 
-// --- State ---
+// State
 let currentCategoryId = 0;
 let currentCategoryName = "";
 let currentCategoryKey = "";
@@ -79,7 +79,7 @@ function showLoading(show) {
     sendButton.disabled = show;
 }
 
-// --- API Call Function ---
+// API Call Function
 
 async function sendMessage(userMessage) {
     if (!userMessage.trim()) return;
@@ -121,7 +121,7 @@ async function sendMessage(userMessage) {
 }
 
 
-// --- UI Transition Functions ---
+// UI Transition Functions
 
 function returnToHome() {
     goalSetting.classList.add('hidden');
